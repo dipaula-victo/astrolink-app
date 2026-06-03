@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from '../src/constants/theme';
+import { useData } from '../src/contexts/DataContext';
 
 const schema = yup.object({
   areaName: yup.string().required('O nome da área é obrigatório.'),
@@ -26,6 +27,7 @@ const schema = yup.object({
 
 export default function AddAreaScreen() {
   const router = useRouter();
+  const { addArea } = useData();
   
   // Adicionado defaultValues para evitar o erro de "uncontrolled input"
   const { control, handleSubmit, formState: { errors } } = useForm({
@@ -40,18 +42,14 @@ export default function AddAreaScreen() {
   // Função assíncrona que realmente salva os dados localmente
   const onSubmit = async (data) => {
     try {
-      // Converte o objeto do formulário em uma string JSON para salvar no AsyncStorage
-      const jsonValue = JSON.stringify(data);
-      await AsyncStorage.setItem('@astrolink_target_area', jsonValue);
-      
+      await addArea(data);
       Alert.alert(
         "Área Salva com Sucesso!", 
-        `A região "${data.areaName}" foi registrada para monitoramento orbital.`,
+        `A região "${data.areaName}" foi registrada e ativada.`,
         [{ text: "OK", onPress: () => router.back() }]
       );
     } catch (e) {
       Alert.alert("Erro", "Não foi possível salvar os dados da região.");
-      console.error(e);
     }
   };
 
