@@ -1,11 +1,13 @@
 import React from 'react';
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import AlertCard from '../../src/components/AlertCard';
 import { useData } from '../../src/contexts/DataContext';
+import { useRouter } from 'expo-router';
+
 
 export default function DashboardScreen() {
-  // Consumindo os alertas do nosso Contexto Global
   const { alerts } = useData();
+  const router = useRouter(); // Inicializa o roteador
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -15,19 +17,25 @@ export default function DashboardScreen() {
         <Text style={styles.mapText}>[Prévia GEE - Sentinel 2]</Text>
       </View>
 
+      {/* NOVO BOTÃO DE AÇÃO */}
+      <TouchableOpacity 
+        style={styles.addButton}
+        onPress={() => router.push('/add-area')}
+      >
+        <Text style={styles.addButtonText}>+ Mapear Nova Área</Text>
+      </TouchableOpacity>
+
       <Text style={styles.sectionTitle}>Alertas Inteligentes</Text>
       
-      {/* Percorre a lista de alertas do Contexto e renderiza um Card para cada um */}
       {alerts.map((alert) => (
         <AlertCard 
-          key={alert.id}
+          key={alert.id} 
           title={alert.title} 
           badgeText={alert.badgeText} 
           description={alert.description} 
           type={alert.type}
         />
       ))}
-
     </ScrollView>
   );
 }
@@ -37,5 +45,7 @@ const styles = StyleSheet.create({
   content: { padding: 20 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#333333', marginBottom: 15, marginTop: 10 },
   mapPlaceholder: { height: 150, backgroundColor: '#c7d8eb', borderRadius: 15, justifyContent: 'center', alignItems: 'center', marginBottom: 25 },
-  mapText: { color: '#0b3d91', fontWeight: 'bold' }
+  mapText: { color: '#0b3d91', fontWeight: 'bold' },
+  addButton: { backgroundColor: '#0b3d91', padding: 15, borderRadius: 10, alignItems: 'center', marginBottom: 20 },
+  addButtonText: { color: '#ffffff', fontWeight: 'bold', fontSize: 15 },
 });

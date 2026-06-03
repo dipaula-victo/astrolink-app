@@ -3,10 +3,20 @@ import { DataProvider } from '../src/contexts/DataContext';
 
 export default function RootLayout() {
   return (
-    // Envolvemos a navegação inteira com o nosso provedor de dados
     <DataProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="add-area" 
+          options={{ 
+            presentation: 'modal',
+            headerShown: true,
+            title: 'Configurar Região',
+            headerStyle: { backgroundColor: '#0b3d91' },
+            headerTintColor: '#fff',
+            headerLeft: () => null,
+          }} 
+        />
       </Stack>
     </DataProvider>
   );
