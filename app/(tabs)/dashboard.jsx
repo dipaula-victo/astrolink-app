@@ -18,7 +18,6 @@ export default function DashboardScreen() {
         <Text style={styles.mapText}>[Prévia GEE - Sentinel 2]</Text>
       </View>
 
-      {/* NOVO BOTÃO DE AÇÃO */}
       <TouchableOpacity 
         style={styles.addButton}
         onPress={() => router.push('/add-area')}

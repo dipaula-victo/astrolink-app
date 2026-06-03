@@ -2,34 +2,10 @@ import React from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../src/constants/theme';
+import { MOCK_REPORTS } from '../../src/utils/mockData';
 
 export default function ReportsScreen() {
-  // Array com os dados dos relatórios definidos
-  const reportData = [
-    {
-      id: '1',
-      type: 'PDF',
-      title: 'Previsão Climática Mensal',
-      subtitle: 'Maio 2026 - Tendências',
-      color: COLORS.critical
-    },
-    {
-      id: '2',
-      type: 'XLS',
-      title: 'Histórico de Umidade',
-      subtitle: 'Exportação de Telemetria IoT',
-      color: COLORS.success
-    },
-    {
-      id: '3',
-      type: 'PDF',
-      title: 'Análise de Safra - Q1',
-      subtitle: 'Comparativo Anômalo (SMOTE)',
-      color: COLORS.critical
-    }
-  ];
-
-  // Função simulando o download
+  
   const handleDownload = (fileName) => {
     Alert.alert("Download Iniciado", `Baixando o arquivo: ${fileName}`);
   };
@@ -44,8 +20,8 @@ export default function ReportsScreen() {
         </Text>
       </View>
 
-      {/* Renderização dinâmica da lista de relatórios */}
-      {reportData.map((report) => (
+      {/* Usando diretamente o array importado do mockData */}
+      {MOCK_REPORTS.map((report) => (
         <View key={report.id} style={styles.reportItem}>
           
           <View style={[styles.iconBox, { backgroundColor: `${report.color}15` }]}>
