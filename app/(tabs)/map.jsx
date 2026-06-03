@@ -1,29 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function MapScreen() {
   const [loading, setLoading] = useState(true);
-  const [activeLayer, setActiveLayer] = useState('thermal'); // 'thermal', 'ndvi', '3d'
+  const [activeLayer, setActiveLayer] = useState('thermal'); // Camada padrão inicial
 
-  // Simula o tempo de resposta e renderização do motor analítico do GEE ao montar a tela
+  // 1. LER DADOS: Executado apenas uma vez quando a tela é carregada
   useEffect(() => {
-    setLoading(true);
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1200); // 1.2 segundos de simulação de carregamento
+    const loadSavedLayer = async () => {
+      try {
+        const savedLayer = await AsyncStorage.getItem('@astrolink_layer_pref');
+        if (savedLayer !== null) {
+          setActiveLayer(savedLayer); // Aplica a camada que estava salva
+        }
+      } catch (error) {
+        console.error('Erro ao ler do AsyncStorage:', error);
+      } finally {
+        // Após descobrir a preferência, simula o tempo de renderização do GEE
+        setTimeout(() => setLoading(false), 1200);
+      }
+    };
 
-    return () => clearTimeout(timer);
-  }, [activeLayer]); // Recarrega simulando novo processamento sempre que a camada mudar
+    loadSavedLayer();
+  }, []); // Array vazio garante que rode só na montagem
 
-  // Função auxiliar para mudar a cor de fundo com base na camada selecionada
+  // 2. SALVAR DADOS: Função chamada quando o usuário clica em um botão
+  const handleLayerChange = async (layer) => {
+    setActiveLayer(layer);
+    setLoading(true); // Invoca a tela de carregamento novamente
+
+    try {
+      await AsyncStorage.setItem('@astrolink_layer_pref', layer); // Salva no dispositivo
+    } catch (error) {
+      console.error('Erro ao salvar no AsyncStorage:', error);
+    }
+
+    // Simula o tempo de renderização da nova camada
+    setTimeout(() => setLoading(false), 1200);
+  };
+
   const getMapBackground = () => {
     switch (activeLayer) {
       case 'ndvi':
-        return '#1b4d3e'; // Tom esverdeado para o Índice de Vegetação (NDVI)
+        return '#1b4d3e'; 
       case '3d':
-        return '#5c4033'; // Tom terroso para simular relevo/topografia
+        return '#5c4033'; 
       default:
-        return '#1f2937'; // Tom escuro/térmico padrão
+        return '#1f2937'; 
     }
   };
 
@@ -37,22 +61,20 @@ export default function MapScreen() {
       ) : (
         <View style={[styles.mapContainer, { backgroundColor: getMapBackground() }]}>
           
-          {/* Texto Central Indicativo de Renderização Orbital */}
           <Text style={styles.mapLabel}>
             VISÃO SATELITAL: {activeLayer.toUpperCase()}
           </Text>
 
-          {/* Alvo Georreferenciado de Risco Extremo (Risco de Geada) */}
           <View style={styles.targetMarker}>
             <View style={styles.targetPulse} />
             <Text style={styles.targetText}>Risco Geada</Text>
           </View>
 
-          {/* Painel Flutuante de Controle de Camadas (Lado Direito) */}
           <View style={styles.layerControlContainer}>
+            {/* Trocamos o onPress para usar a nossa nova função handleLayerChange */}
             <TouchableOpacity 
               style={[styles.layerButton, activeLayer === 'thermal' && styles.activeButton]}
-              onPress={() => setActiveLayer('thermal')}
+              onPress={() => handleLayerChange('thermal')}
             >
               <Text style={[styles.layerButtonText, activeLayer === 'thermal' && styles.activeButtonText]}>
                 Camada: Térmica
@@ -61,7 +83,7 @@ export default function MapScreen() {
 
             <TouchableOpacity 
               style={[styles.layerButton, activeLayer === 'ndvi' && styles.activeButton]}
-              onPress={() => setActiveLayer('ndvi')}
+              onPress={() => handleLayerChange('ndvi')}
             >
               <Text style={[styles.layerButtonText, activeLayer === 'ndvi' && styles.activeButtonText]}>
                 Índice NDVI
@@ -70,7 +92,7 @@ export default function MapScreen() {
 
             <TouchableOpacity 
               style={[styles.layerButton, activeLayer === '3d' && styles.activeButton]}
-              onPress={() => setActiveLayer('3d')}
+              onPress={() => handleLayerChange('3d')}
             >
               <Text style={[styles.layerButtonText, activeLayer === '3d' && styles.activeButtonText]}>
                 Topografia 3D
@@ -78,7 +100,6 @@ export default function MapScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Nota de rodapé informativa sobre as coordenadas */}
           <View style={styles.coordinatesFooter}>
             <Text style={styles.footerText}>Anomalia climática detectada via Sentinel-2</Text>
           </View>
