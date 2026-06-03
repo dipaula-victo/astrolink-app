@@ -1,54 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from '../../src/constants/theme';
 
 export default function MapScreen() {
   const [loading, setLoading] = useState(true);
-  const [activeLayer, setActiveLayer] = useState('thermal'); // Camada padrão inicial
+  const [activeLayer, setActiveLayer] = useState('thermal');
 
-  // 1. LER DADOS: Executado apenas uma vez quando a tela é carregada
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(20)).current;
+
+  // useEffect de Carregamento de Dados
   useEffect(() => {
     const loadSavedLayer = async () => {
       try {
         const savedLayer = await AsyncStorage.getItem('@astrolink_layer_pref');
-        if (savedLayer !== null) {
-          setActiveLayer(savedLayer); // Aplica a camada que estava salva
-        }
+        if (savedLayer !== null) setActiveLayer(savedLayer);
       } catch (error) {
         console.error('Erro ao ler do AsyncStorage:', error);
       } finally {
-        // Após descobrir a preferência, simula o tempo de renderização do GEE
         setTimeout(() => setLoading(false), 1200);
       }
     };
-
     loadSavedLayer();
-  }, []); // Array vazio garante que rode só na montagem
+  }, []);
 
-  // 2. SALVAR DADOS: Função chamada quando o usuário clica em um botão
+  // Dispara a animação SEMPRE que o loading terminar
+  useEffect(() => {
+    if (!loading) {
+      // Reseta os valores para 0 para a animação poder acontecer de novo
+      fadeAnim.setValue(0);
+      slideAnim.setValue(20);
+      
+      Animated.parallel([
+        Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.timing(slideAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
+      ]).start();
+    }
+  }, [loading]); // Ouve a variável loading
+
   const handleLayerChange = async (layer) => {
     setActiveLayer(layer);
-    setLoading(true); // Invoca a tela de carregamento novamente
-
+    setLoading(true); // Fica true, o que faz a tela de carregamento voltar
     try {
-      await AsyncStorage.setItem('@astrolink_layer_pref', layer); // Salva no dispositivo
+      await AsyncStorage.setItem('@astrolink_layer_pref', layer);
     } catch (error) {
       console.error('Erro ao salvar no AsyncStorage:', error);
     }
-
-    // Simula o tempo de renderização da nova camada
     setTimeout(() => setLoading(false), 1200);
   };
 
   const getMapBackground = () => {
     switch (activeLayer) {
-      case 'ndvi':
-        return '#1b4d3e'; 
-      case '3d':
-        return '#5c4033'; 
-      default:
-        return '#1f2937'; 
+      case 'ndvi': return '#1b4d3e'; 
+      case '3d': return '#5c4033'; 
+      default: return '#1f2937'; 
     }
   };
 
@@ -60,11 +66,9 @@ export default function MapScreen() {
           <Text style={styles.loadingText}>RENDERIZANDO MOTOR GEE...</Text>
         </View>
       ) : (
-        <View style={[styles.mapContainer, { backgroundColor: getMapBackground() }]}>
+        <Animated.View style={[styles.mapContainer, { backgroundColor: getMapBackground(), opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
           
-          <Text style={styles.mapLabel}>
-            VISÃO SATELITAL: {activeLayer.toUpperCase()}
-          </Text>
+          <Text style={styles.mapLabel}>VISÃO SATELITAL: {activeLayer.toUpperCase()}</Text>
 
           <View style={styles.targetMarker}>
             <View style={styles.targetPulse} />
@@ -72,32 +76,14 @@ export default function MapScreen() {
           </View>
 
           <View style={styles.layerControlContainer}>
-            {/* Trocamos o onPress para usar a nossa nova função handleLayerChange */}
-            <TouchableOpacity 
-              style={[styles.layerButton, activeLayer === 'thermal' && styles.activeButton]}
-              onPress={() => handleLayerChange('thermal')}
-            >
-              <Text style={[styles.layerButtonText, activeLayer === 'thermal' && styles.activeButtonText]}>
-                Camada: Térmica
-              </Text>
+            <TouchableOpacity style={[styles.layerButton, activeLayer === 'thermal' && styles.activeButton]} onPress={() => handleLayerChange('thermal')}>
+              <Text style={[styles.layerButtonText, activeLayer === 'thermal' && styles.activeButtonText]}>Camada: Térmica</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={[styles.layerButton, activeLayer === 'ndvi' && styles.activeButton]}
-              onPress={() => handleLayerChange('ndvi')}
-            >
-              <Text style={[styles.layerButtonText, activeLayer === 'ndvi' && styles.activeButtonText]}>
-                Índice NDVI
-              </Text>
+            <TouchableOpacity style={[styles.layerButton, activeLayer === 'ndvi' && styles.activeButton]} onPress={() => handleLayerChange('ndvi')}>
+              <Text style={[styles.layerButtonText, activeLayer === 'ndvi' && styles.activeButtonText]}>Índice NDVI</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={[styles.layerButton, activeLayer === '3d' && styles.activeButton]}
-              onPress={() => handleLayerChange('3d')}
-            >
-              <Text style={[styles.layerButtonText, activeLayer === '3d' && styles.activeButtonText]}>
-                Topografia 3D
-              </Text>
+            <TouchableOpacity style={[styles.layerButton, activeLayer === '3d' && styles.activeButton]} onPress={() => handleLayerChange('3d')}>
+              <Text style={[styles.layerButtonText, activeLayer === '3d' && styles.activeButtonText]}>Topografia 3D</Text>
             </TouchableOpacity>
           </View>
 
@@ -105,7 +91,7 @@ export default function MapScreen() {
             <Text style={styles.footerText}>Anomalia climática detectada via Sentinel-2</Text>
           </View>
 
-        </View>
+        </Animated.View>
       )}
     </View>
   );

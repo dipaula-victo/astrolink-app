@@ -1,11 +1,10 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, Animated } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from '../src/constants/theme';
 import { useData } from '../src/contexts/DataContext';
 
@@ -29,7 +28,18 @@ export default function AddAreaScreen() {
   const router = useRouter();
   const { addArea } = useData();
   
-  // Adicionado defaultValues para evitar o erro de "uncontrolled input"
+  // Configurando os valores iniciais da animação
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.95)).current;
+
+  // Disparando a animação assim que a tela é montada
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
+    ]).start();
+  }, []);
+
   const { control, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -39,7 +49,7 @@ export default function AddAreaScreen() {
     }
   });
 
-  // Função assíncrona que realmente salva os dados localmente
+  // Função assíncrona que salva os dados globalmente via Context API
   const onSubmit = async (data) => {
     try {
       await addArea(data);
@@ -58,7 +68,7 @@ export default function AddAreaScreen() {
       style={styles.container} 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View style={styles.formCard}>
+      <Animated.View style={[styles.formCard, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
         
         <View style={styles.formHeader}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
@@ -126,7 +136,7 @@ export default function AddAreaScreen() {
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit(onSubmit)}>
           <Text style={styles.submitButtonText}>VALIDAR E SALVAR</Text>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     </KeyboardAvoidingView>
   );
 }

@@ -1,11 +1,22 @@
-import React from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../src/constants/theme';
 import { MOCK_REPORTS } from '../../src/utils/mockData';
 
 export default function ReportsScreen() {
   
+  // Configuração das animações
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+      Animated.timing(slideAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
+    ]).start();
+  }, []);
+
   const handleDownload = (fileName) => {
     Alert.alert("Download Iniciado", `Baixando o arquivo: ${fileName}`);
   };
@@ -13,37 +24,35 @@ export default function ReportsScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       
-      <View style={styles.headerSection}>
-        <Text style={styles.sectionTitle}>Análises Consolidadas</Text>
-        <Text style={styles.sectionDescription}>
-          Relatórios gerados automaticamente pelo algoritmo de regressão e processamento em nuvem.
-        </Text>
-      </View>
-
-      {/* Usando diretamente o array importado do mockData */}
-      {MOCK_REPORTS.map((report) => (
-        <View key={report.id} style={styles.reportItem}>
-          
-          <View style={[styles.iconBox, { backgroundColor: `${report.color}15` }]}>
-            <Text style={[styles.iconText, { color: report.color }]}>{report.type}</Text>
-          </View>
-          
-          <View style={styles.reportInfo}>
-            <Text style={styles.reportTitle}>{report.title}</Text>
-            <Text style={styles.reportSubtitle}>{report.subtitle}</Text>
-          </View>
-
-          <TouchableOpacity 
-            style={styles.downloadButton}
-            onPress={() => handleDownload(report.title)}
-          >
-            <Text style={styles.downloadText}>BAIXAR</Text>
-            <Ionicons name="download-outline" size={16} color={COLORS.primary} />
-          </TouchableOpacity>
-          
+      {/* Envolvendo o conteúdo para animar a entrada */}
+      <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+        
+        <View style={styles.headerSection}>
+          <Text style={styles.sectionTitle}>Análises Consolidadas</Text>
+          <Text style={styles.sectionDescription}>
+            Relatórios gerados automaticamente pelo algoritmo de regressão e processamento em nuvem.
+          </Text>
         </View>
-      ))}
 
+        {MOCK_REPORTS.map((report) => (
+          <View key={report.id} style={styles.reportItem}>
+            <View style={[styles.iconBox, { backgroundColor: `${report.color}15` }]}>
+              <Text style={[styles.iconText, { color: report.color }]}>{report.type}</Text>
+            </View>
+            
+            <View style={styles.reportInfo}>
+              <Text style={styles.reportTitle}>{report.title}</Text>
+              <Text style={styles.reportSubtitle}>{report.subtitle}</Text>
+            </View>
+
+            <TouchableOpacity style={styles.downloadButton} onPress={() => handleDownload(report.title)}>
+              <Text style={styles.downloadText}>BAIXAR</Text>
+              <Ionicons name="download-outline" size={16} color={COLORS.primary} />
+            </TouchableOpacity>
+          </View>
+        ))}
+
+      </Animated.View>
     </ScrollView>
   );
 }
