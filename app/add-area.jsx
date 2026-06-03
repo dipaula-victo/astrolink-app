@@ -4,7 +4,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons'; // Importação do ícone
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const schema = yup.object({
   areaName: yup.string().required('O nome da área é obrigatório.'),
@@ -25,16 +26,32 @@ const schema = yup.object({
 export default function AddAreaScreen() {
   const router = useRouter();
   
+  // Adicionado defaultValues para evitar o erro de "uncontrolled input"
   const { control, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      areaName: '',
+      latitude: '',
+      longitude: '',
+    }
   });
 
-  const onSubmit = (data) => {
-    Alert.alert(
-      "Área Validada!", 
-      `A região "${data.areaName}" (${data.latitude}, ${data.longitude}) está pronta para o motor GEE.`,
-      [{ text: "OK", onPress: () => router.back() }]
-    );
+  // Função assíncrona que realmente salva os dados localmente
+  const onSubmit = async (data) => {
+    try {
+      // Converte o objeto do formulário em uma string JSON para salvar no AsyncStorage
+      const jsonValue = JSON.stringify(data);
+      await AsyncStorage.setItem('@astrolink_target_area', jsonValue);
+      
+      Alert.alert(
+        "Área Salva com Sucesso!", 
+        `A região "${data.areaName}" foi registrada para monitoramento orbital.`,
+        [{ text: "OK", onPress: () => router.back() }]
+      );
+    } catch (e) {
+      Alert.alert("Erro", "Não foi possível salvar os dados da região.");
+      console.error(e);
+    }
   };
 
   return (
@@ -44,7 +61,6 @@ export default function AddAreaScreen() {
     >
       <View style={styles.formCard}>
         
-        {/* NOVO: Cabeçalho com Botão de Voltar Integrado */}
         <View style={styles.formHeader}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#0b3d91" />
@@ -63,7 +79,7 @@ export default function AddAreaScreen() {
             <TextInput
               style={[styles.input, errors.areaName && styles.inputError]}
               placeholder="Ex: Fazenda São João - Lote B"
-              placeholderTextColor="#a0a0a0" // NOVO: Cor do Placeholder
+              placeholderTextColor="#a0a0a0"
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -80,7 +96,7 @@ export default function AddAreaScreen() {
             <TextInput
               style={[styles.input, errors.latitude && styles.inputError]}
               placeholder="Ex: -23.5505"
-              placeholderTextColor="#a0a0a0" // NOVO: Cor do Placeholder
+              placeholderTextColor="#a0a0a0"
               keyboardType="numeric"
               onBlur={onBlur}
               onChangeText={onChange}
@@ -98,7 +114,7 @@ export default function AddAreaScreen() {
             <TextInput
               style={[styles.input, errors.longitude && styles.inputError]}
               placeholder="Ex: -46.6333"
-              placeholderTextColor="#a0a0a0" // NOVO: Cor do Placeholder
+              placeholderTextColor="#a0a0a0"
               keyboardType="numeric"
               onBlur={onBlur}
               onChangeText={onChange}
@@ -119,15 +135,12 @@ export default function AddAreaScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f4f7f6', justifyContent: 'center', padding: 20 },
   formCard: { backgroundColor: '#ffffff', borderRadius: 15, padding: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 5, elevation: 4 },
-  
-  // NOVOS ESTILOS PARA O CABEÇALHO INTERNO
   formHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
   backButton: { marginRight: 15, padding: 5 },
   headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#0b3d91' },
   headerSubtitle: { fontSize: 12, color: '#777777' },
-  
   label: { fontSize: 14, fontWeight: 'bold', color: '#333333', marginBottom: 5, marginTop: 10 },
-  input: { backgroundColor: '#f9f9f9', borderWidth: 1, borderColor: '#e0e0e0', borderRadius: 8, paddingHorizontal: 15, paddingVertical: 12, fontSize: 15, color: '#333' }, // Adicionado color: '#333' para garantir a cor do texto digitado
+  input: { backgroundColor: '#f9f9f9', borderWidth: 1, borderColor: '#e0e0e0', borderRadius: 8, paddingHorizontal: 15, paddingVertical: 12, fontSize: 15, color: '#333' },
   inputError: { borderColor: '#fc3d21', backgroundColor: '#fee2e2' },
   errorText: { color: '#fc3d21', fontSize: 12, marginTop: 4, fontWeight: 'bold' },
   submitButton: { backgroundColor: '#0b3d91', paddingVertical: 15, borderRadius: 8, alignItems: 'center', marginTop: 25 },
