@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { COLORS } from '../../src/constants/theme';
 
 export default function MapScreen() {
   const [loading, setLoading] = useState(true);
@@ -55,7 +56,7 @@ export default function MapScreen() {
     <View style={styles.container}>
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0b3d91" />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.loadingText}>RENDERIZANDO MOTOR GEE...</Text>
         </View>
       ) : (
@@ -111,102 +112,19 @@ export default function MapScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f4f7f6',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 14,
-    color: '#0b3d91',
-    fontWeight: 'bold',
-    letterSpacing: 1.5,
-  },
-  mapContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  mapLabel: {
-    color: 'rgba(255, 255, 255, 0.4)',
-    fontWeight: 'bold',
-    letterSpacing: 2,
-    fontSize: 16,
-    position: 'absolute',
-    top: 30,
-  },
-  layerControlContainer: {
-    position: 'absolute',
-    top: 30,
-    right: 20,
-    gap: 10,
-    maxWidth: 150,
-  },
-  layerButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 4,
-  },
-  activeButton: {
-    backgroundColor: '#0b3d91', // Destaca com o Azul NASA
-  },
-  layerButtonText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#0b3d91',
-    textAlign: 'center',
-  },
-  activeButtonText: {
-    color: '#ffffff',
-  },
-  targetMarker: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  targetPulse: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 3,
-    borderColor: '#fc3d21', // Vermelho de criticidade
-    backgroundColor: 'rgba(252, 61, 33, 0.3)',
-  },
-  targetText: {
-    position: 'absolute',
-    top: -28,
-    backgroundColor: '#fc3d21',
-    color: '#ffffff',
-    fontSize: 11,
-    fontWeight: 'bold',
-    paddingVertical: 3,
-    paddingHorizontal: 8,
-    borderRadius: 4,
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-  },
-  coordinatesFooter: {
-    position: 'absolute',
-    bottom: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingVertical: 6,
-    paddingHorizontal: 15,
-    borderRadius: 15,
-  },
-  footerText: {
-    color: '#ffffff',
-    fontSize: 12,
-  },
+  container: { flex: 1, backgroundColor: COLORS.background },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { marginTop: 10, fontSize: 14, color: COLORS.primary, fontWeight: 'bold', letterSpacing: 1.5 },
+  mapContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', position: 'relative' },
+  mapLabel: { color: 'rgba(255, 255, 255, 0.4)', fontWeight: 'bold', letterSpacing: 2, fontSize: 16, position: 'absolute', top: 30 },
+  layerControlContainer: { position: 'absolute', top: 30, right: 20, gap: 10, maxWidth: 150 },
+  layerButton: { backgroundColor: 'rgba(255, 255, 255, 0.9)', paddingVertical: 10, paddingHorizontal: 12, borderRadius: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 3, elevation: 4 },
+  activeButton: { backgroundColor: COLORS.primary },
+  layerButtonText: { fontSize: 12, fontWeight: 'bold', color: COLORS.primary, textAlign: 'center' },
+  activeButtonText: { color: COLORS.white },
+  targetMarker: { position: 'absolute', justifyContent: 'center', alignItems: 'center' },
+  targetPulse: { width: 24, height: 24, borderRadius: 12, borderWidth: 3, borderColor: COLORS.critical, backgroundColor: 'rgba(252, 61, 33, 0.3)' },
+  targetText: { position: 'absolute', top: -28, backgroundColor: COLORS.critical, color: COLORS.white, fontSize: 11, fontWeight: 'bold', paddingVertical: 3, paddingHorizontal: 8, borderRadius: 4, overflow: 'hidden' },
+  coordinatesFooter: { position: 'absolute', bottom: 20, backgroundColor: 'rgba(0, 0, 0, 0.6)', paddingVertical: 6, paddingHorizontal: 15, borderRadius: 15 },
+  footerText: { color: COLORS.white, fontSize: 12 },
 });

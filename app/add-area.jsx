@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { COLORS } from '../src/constants/theme';
 
 const schema = yup.object({
   areaName: yup.string().required('O nome da área é obrigatório.'),
@@ -63,7 +64,7 @@ export default function AddAreaScreen() {
         
         <View style={styles.formHeader}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#0b3d91" />
+            <Ionicons name="arrow-back" size={24} color={COLORS.primary} />
           </TouchableOpacity>
           <View>
             <Text style={styles.headerTitle}>Definir Área de Interesse</Text>
@@ -79,7 +80,7 @@ export default function AddAreaScreen() {
             <TextInput
               style={[styles.input, errors.areaName && styles.inputError]}
               placeholder="Ex: Fazenda São João - Lote B"
-              placeholderTextColor="#a0a0a0"
+              placeholderTextColor={COLORS.placeholder}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -96,7 +97,7 @@ export default function AddAreaScreen() {
             <TextInput
               style={[styles.input, errors.latitude && styles.inputError]}
               placeholder="Ex: -23.5505"
-              placeholderTextColor="#a0a0a0"
+              placeholderTextColor={COLORS.placeholder}
               keyboardType="numeric"
               onBlur={onBlur}
               onChangeText={onChange}
@@ -114,7 +115,7 @@ export default function AddAreaScreen() {
             <TextInput
               style={[styles.input, errors.longitude && styles.inputError]}
               placeholder="Ex: -46.6333"
-              placeholderTextColor="#a0a0a0"
+              placeholderTextColor={COLORS.placeholder}
               keyboardType="numeric"
               onBlur={onBlur}
               onChangeText={onChange}
@@ -133,16 +134,16 @@ export default function AddAreaScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f4f7f6', justifyContent: 'center', padding: 20 },
-  formCard: { backgroundColor: '#ffffff', borderRadius: 15, padding: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 5, elevation: 4 },
+  container: { flex: 1, backgroundColor: COLORS.background, justifyContent: 'center', padding: 20 },
+  formCard: { backgroundColor: COLORS.white, borderRadius: 15, padding: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 5, elevation: 4 },
   formHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
   backButton: { marginRight: 15, padding: 5 },
-  headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#0b3d91' },
-  headerSubtitle: { fontSize: 12, color: '#777777' },
-  label: { fontSize: 14, fontWeight: 'bold', color: '#333333', marginBottom: 5, marginTop: 10 },
-  input: { backgroundColor: '#f9f9f9', borderWidth: 1, borderColor: '#e0e0e0', borderRadius: 8, paddingHorizontal: 15, paddingVertical: 12, fontSize: 15, color: '#333' },
-  inputError: { borderColor: '#fc3d21', backgroundColor: '#fee2e2' },
-  errorText: { color: '#fc3d21', fontSize: 12, marginTop: 4, fontWeight: 'bold' },
-  submitButton: { backgroundColor: '#0b3d91', paddingVertical: 15, borderRadius: 8, alignItems: 'center', marginTop: 25 },
-  submitButtonText: { color: '#ffffff', fontSize: 14, fontWeight: 'bold', letterSpacing: 1 },
+  headerTitle: { fontSize: 18, fontWeight: 'bold', color: COLORS.primary },
+  headerSubtitle: { fontSize: 12, color: COLORS.textMuted },
+  label: { fontSize: 14, fontWeight: 'bold', color: COLORS.textMain, marginBottom: 5, marginTop: 10 },
+  input: { backgroundColor: '#f9f9f9', borderWidth: 1, borderColor: COLORS.border, borderRadius: 8, paddingHorizontal: 15, paddingVertical: 12, fontSize: 15, color: COLORS.textMain },
+  inputError: { borderColor: COLORS.critical, backgroundColor: COLORS.criticalBg },
+  errorText: { color: COLORS.critical, fontSize: 12, marginTop: 4, fontWeight: 'bold' },
+  submitButton: { backgroundColor: COLORS.primary, paddingVertical: 15, borderRadius: 8, alignItems: 'center', marginTop: 25 },
+  submitButtonText: { color: COLORS.white, fontSize: 14, fontWeight: 'bold', letterSpacing: 1 },
 });

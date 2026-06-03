@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from '../../src/constants/theme';
 
 export default function ReportsScreen() {
   // Array com os dados dos relatórios definidos
@@ -10,21 +11,21 @@ export default function ReportsScreen() {
       type: 'PDF',
       title: 'Previsão Climática Mensal',
       subtitle: 'Maio 2026 - Tendências',
-      color: '#fc3d21' // Vermelho para PDF
+      color: COLORS.critical
     },
     {
       id: '2',
       type: 'XLS',
       title: 'Histórico de Umidade',
       subtitle: 'Exportação de Telemetria IoT',
-      color: '#059669' // Verde para Excel/Planilhas
+      color: COLORS.success
     },
     {
       id: '3',
       type: 'PDF',
       title: 'Análise de Safra - Q1',
       subtitle: 'Comparativo Anômalo (SMOTE)',
-      color: '#fc3d21'
+      color: COLORS.critical
     }
   ];
 
@@ -61,7 +62,7 @@ export default function ReportsScreen() {
             onPress={() => handleDownload(report.title)}
           >
             <Text style={styles.downloadText}>BAIXAR</Text>
-            <Ionicons name="download-outline" size={16} color="#0b3d91" />
+            <Ionicons name="download-outline" size={16} color={COLORS.primary} />
           </TouchableOpacity>
           
         </View>
@@ -72,78 +73,17 @@ export default function ReportsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f4f7f6',
-  },
-  content: {
-    padding: 20,
-  },
-  headerSection: {
-    marginBottom: 25,
-    marginTop: 10,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  sectionDescription: {
-    fontSize: 14,
-    color: '#777777',
-    lineHeight: 20,
-  },
-  reportItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  iconBox: {
-    width: 45,
-    height: 45,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  iconText: {
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  reportInfo: {
-    flex: 1,
-  },
-  reportTitle: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 3,
-  },
-  reportSubtitle: {
-    fontSize: 12,
-    color: '#777777',
-  },
-  downloadButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    backgroundColor: '#e0eaf5',
-    borderRadius: 8,
-    gap: 4,
-  },
-  downloadText: {
-    color: '#0b3d91', // Azul NASA
-    fontSize: 12,
-    fontWeight: 'bold',
-  }
+  container: { flex: 1, backgroundColor: COLORS.background },
+  content: { padding: 20 },
+  headerSection: { marginBottom: 25, marginTop: 10 },
+  sectionTitle: { fontSize: 20, fontWeight: 'bold', color: COLORS.textMain, marginBottom: 5 },
+  sectionDescription: { fontSize: 14, color: COLORS.textMuted, lineHeight: 20 },
+  reportItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.white, padding: 15, borderRadius: 12, marginBottom: 15, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 2 },
+  iconBox: { width: 45, height: 45, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  iconText: { fontWeight: 'bold', fontSize: 14 },
+  reportInfo: { flex: 1 },
+  reportTitle: { fontSize: 15, fontWeight: 'bold', color: COLORS.textMain, marginBottom: 3 },
+  reportSubtitle: { fontSize: 12, color: COLORS.textMuted },
+  downloadButton: { flexDirection: 'row', alignItems: 'center', paddingVertical: 5, paddingHorizontal: 10, backgroundColor: '#e0eaf5', borderRadius: 8, gap: 4 },
+  downloadText: { color: COLORS.primary, fontSize: 12, fontWeight: 'bold' }
 });

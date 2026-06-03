@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { DataProvider } from '../src/contexts/DataContext';
+import { COLORS } from '../src/constants/theme';
 
 export default function RootLayout() {
   return (
@@ -12,8 +13,8 @@ export default function RootLayout() {
             presentation: 'modal',
             headerShown: true,
             title: 'Configurar Região',
-            headerStyle: { backgroundColor: '#0b3d91' },
-            headerTintColor: '#fff',
+            headerStyle: { backgroundColor: COLORS.primary },
+            headerTintColor: COLORS.white,
             headerLeft: () => null,
           }} 
         />

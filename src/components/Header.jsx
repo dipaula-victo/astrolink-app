@@ -1,8 +1,9 @@
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { COLORS } from '../constants/theme'; // Importação do tema
 
 export default function Header() {
-  // Pega as margens seguras do dispositivo (notch, barra de status)
   const insets = useSafeAreaInsets();
 
   return (
@@ -15,12 +16,11 @@ export default function Header() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0b3d91', // Azul NASA
+    backgroundColor: COLORS.primary,
     paddingHorizontal: 20,
     paddingBottom: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    // Adiciona uma leve sombra para dar profundidade
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
@@ -28,12 +28,12 @@ const styles = StyleSheet.create({
     elevation: 5, 
   },
   title: {
-    color: '#ffffff',
+    color: COLORS.white,
     fontSize: 22,
     fontWeight: 'bold',
   },
   subtitle: {
-    color: '#ffffff',
+    color: COLORS.white,
     fontSize: 14,
     opacity: 0.8,
     marginTop: 5,

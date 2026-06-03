@@ -1,13 +1,14 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../src/components/Header';
+import { COLORS } from '../../src/constants/theme';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#0b3d91', // Azul NASA
-        tabBarInactiveTintColor: '#777777',
+        tabBarActiveTintColor: COLORS.primary,
+        tabBarInactiveTintColor: COLORS.textMuted,
         // Ativamos o header e passamos o nosso componente customizado
         headerShown: true, 
         header: () => <Header />,

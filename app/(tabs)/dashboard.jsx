@@ -3,6 +3,7 @@ import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-nati
 import AlertCard from '../../src/components/AlertCard';
 import { useData } from '../../src/contexts/DataContext';
 import { useRouter } from 'expo-router';
+import { COLORS } from '../../src/constants/theme';
 
 
 export default function DashboardScreen() {
@@ -41,11 +42,11 @@ export default function DashboardScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f4f7f6' },
+  container: { flex: 1, backgroundColor: COLORS.background },
   content: { padding: 20 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#333333', marginBottom: 15, marginTop: 10 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: COLORS.textMain, marginBottom: 15, marginTop: 10 },
   mapPlaceholder: { height: 150, backgroundColor: '#c7d8eb', borderRadius: 15, justifyContent: 'center', alignItems: 'center', marginBottom: 25 },
-  mapText: { color: '#0b3d91', fontWeight: 'bold' },
-  addButton: { backgroundColor: '#0b3d91', padding: 15, borderRadius: 10, alignItems: 'center', marginBottom: 20 },
-  addButtonText: { color: '#ffffff', fontWeight: 'bold', fontSize: 15 },
+  mapText: { color: COLORS.primary, fontWeight: 'bold' },
+  addButton: { backgroundColor: COLORS.primary, padding: 15, borderRadius: 10, alignItems: 'center', marginBottom: 20 },
+  addButtonText: { color: COLORS.white, fontWeight: 'bold', fontSize: 15 },
 });
