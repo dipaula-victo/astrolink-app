@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import Header from '../../src/components/Header';
 
 export default function TabLayout() {
   return (
@@ -7,11 +8,19 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: '#0b3d91', // Azul NASA
         tabBarInactiveTintColor: '#777777',
-        headerShown: false, // Criar header bonitão depois
+        // Ativamos o header e passamos o nosso componente customizado
+        headerShown: true, 
+        header: () => <Header />,
+        
+        // Correção das labels cortadas
         tabBarStyle: {
-          height: 60,
-          paddingBottom: 10,
+          paddingBottom: 5,
           paddingTop: 5,
+          minHeight: 65, // Usamos minHeight em vez de height fixo
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          paddingBottom: 5,
         }
       }}
     >
