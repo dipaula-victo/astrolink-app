@@ -73,13 +73,11 @@ npx expo start
 | :---: | :---: | :---: | :---: |
 | ![Dashboard](./assets/prints/dashboard.png) | ![Mapa](./assets/prints/mapa.png) | ![Relatorios](./assets/prints/relatorios.png) | ![Formulario](./assets/prints/formulario.png) |
 
-*(Adicionar os prints do aplicativo na pasta indicada acima antes de enviar)*
-
 ---
 
 ## 🎥 Vídeo de Demonstração
 
-[Acesse aqui o vídeo demonstrativo do aplicativo no YouTube](LINK_DO_SEU_VIDEO_AQUI)
+[Acesse aqui o vídeo demonstrativo do aplicativo no YouTube](https://www.youtube.com/shorts/XVWAcji830M)
 
 ---
 
